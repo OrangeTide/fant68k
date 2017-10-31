@@ -78,6 +78,8 @@ main(int argc __attribute__((unused)), char **argv __attribute__((unused)))
 
 	bootrom_load("hello.bin");
 
+	timer_init();
+
 	init();
 
 	run();

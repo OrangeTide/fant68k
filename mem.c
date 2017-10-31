@@ -91,6 +91,12 @@ m68k_write_memory_8(unsigned int address, unsigned int value)
 	case MC6850_DATA:
 		console_out(value);
 		return;
+	case S_TIME:
+	case (S_TIME + 1):
+	case (S_TIME + 2):
+	case (S_TIME + 3):
+		timer_update8(address & 3, value);
+		return;
 	}
 	if (address >= BOOTROM_BASE && address < BOOTROM_BASE + BOOTROM_LEN)
 		return; /* ignore writes to ROM */
@@ -112,6 +118,10 @@ m68k_write_memory_16(unsigned int address, unsigned int value)
 #ifndef NDEBUG
 		abort();
 #endif
+		return;
+	case S_TIME:
+	case (S_TIME + 2):
+		timer_update16(address & 2, value);
 		return;
 	}
 	if (address >= BOOTROM_BASE && address < BOOTROM_BASE + BOOTROM_LEN)
@@ -135,6 +145,9 @@ m68k_write_memory_32(unsigned int address, unsigned int value)
 #ifndef NDEBUG
 		abort();
 #endif
+		return;
+	case S_TIME:
+		timer_update32(value);
 		return;
 	}
 	if (address >= BOOTROM_BASE && address < BOOTROM_BASE + BOOTROM_LEN)
