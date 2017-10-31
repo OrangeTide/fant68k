@@ -1,6 +1,6 @@
-= Fantasy 68K =
+# Fantasy 68K #
 
-== Introduction ==
+## Introduction ##
 
 This is a anachronistic fantasy home computer system, representing a
 combination of a peripherials and cababilities that I feel is useful for
@@ -9,7 +9,7 @@ writing small games and toy programs.
 The intention of this environment is to have a system that is specified with
 enough detail that others may construct compatible implementations.
 
-== TODO ==
+## TODO ##
 
 Things that are not yet implemented:
   * Framebuffer (8-bits per pixel, programmable palette)
@@ -20,28 +20,28 @@ Things that are not yet implemented:
   * MIDI in/out
   * Ethernet (NE2000 or AMD LANCE. BIOS exposes as a packet driver)
 
-== Supported Operating Systems ==
+## Supported Operating Systems ##
 
-=== CP/M-68K ===
+### CP/M-68K ###
 
 Primary support is for CP/M-68K v1.3:
   http://www.uxpro.com/cpm/
   http://www.cpm.z80.de/binary.html
 
-=== FORTH 83 ===
+### FORTH 83 ###
 
 FORTH 83 for CP/M-68K
   http://www.cpm.z80.de/binary.html
 
-=== TBD ===
+### TBD ###
 
 (would like to add something that is freeware/public domain for developers)
 
-== Building Tools ==
+## Building Tools ##
 
 You will need some of these tools to build the BIOS and examples.
 
-=== vasm 1.8 ===
+### vasm 1.8 ###
 
 Download vasm1\_8a.tar.gz or later:
   http://sun.hasenbraten.de/vasm/
@@ -51,7 +51,7 @@ Build:
 
 Copy vasmm68k\_mot and vobjdump
 
-=== srec ===
+### srec ###
 
 Download srec\_146\_src.zip :
   http://www.s-record.com/
