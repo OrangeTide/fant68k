@@ -1,0 +1,33 @@
+# object files
+*.a
+*.o
+*.so
+*.bin
+
+# backup files
+*~
+*.bak
+*.sw[p-o]
+
+# generated
+m68kmake
+m68kopac.c
+m68kopdm.c
+m68kopnz.c
+m68kops.c
+m68kops.h
+
+# autotool generated files
+aclocal.m4
+autom4te.cache/
+compile
+config.log
+config.status
+configure
+depcomp
+.deps/
+.dirstamp
+install-sh
+Makefile
+Makefile.in
+missing
