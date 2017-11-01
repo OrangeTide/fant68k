@@ -97,6 +97,11 @@ m68k_write_memory_8(unsigned int address, unsigned int value)
 	case (S_TIME + 3):
 		timer_update8(address & 3, value);
 		return;
+	case DIP_SWITCH:
+	case (DIP_SWITCH + 1):
+	case (DIP_SWITCH + 2):
+	case (DIP_SWITCH + 3):
+		return; /* ignored */
 	}
 	if (address >= BOOTROM_BASE && address < BOOTROM_BASE + BOOTROM_LEN)
 		return; /* ignore writes to ROM */
@@ -123,6 +128,9 @@ m68k_write_memory_16(unsigned int address, unsigned int value)
 	case (S_TIME + 2):
 		timer_update16(address & 2, value);
 		return;
+	case DIP_SWITCH:
+	case (DIP_SWITCH + 2):
+		return; /* ignored */
 	}
 	if (address >= BOOTROM_BASE && address < BOOTROM_BASE + BOOTROM_LEN)
 		return; /* ignore writes to ROM */
@@ -149,6 +157,8 @@ m68k_write_memory_32(unsigned int address, unsigned int value)
 	case S_TIME:
 		timer_update32(value);
 		return;
+	case DIP_SWITCH:
+		return; /* ignored */
 	}
 	if (address >= BOOTROM_BASE && address < BOOTROM_BASE + BOOTROM_LEN)
 		return; /* ignore writes to ROM */
@@ -179,6 +189,16 @@ m68k_read_memory_8(unsigned int address)
 		return 0;
 	case MC6850_DATA:
 		return console_in();
+	case S_TIME:
+	case (S_TIME + 1):
+	case (S_TIME + 2):
+	case (S_TIME + 3):
+		return timer_read_stime8(address & 3);
+	case DIP_SWITCH:
+	case (DIP_SWITCH + 1):
+	case (DIP_SWITCH + 2):
+	case (DIP_SWITCH + 3):
+		return dip_read8(address & 3);
 	}
 	uint8_t *p = mem_access(address);
 	return *p;
@@ -198,6 +218,12 @@ m68k_read_memory_16(unsigned int address)
 	case MC6850_DATA:
 		io_error("illegal access", address);
 		return console_in();
+	case S_TIME:
+	case (S_TIME + 2):
+		return timer_read_stime16(address & 2);
+	case DIP_SWITCH:
+	case (DIP_SWITCH + 2):
+		return dip_read16(address & 2);
 	}
 	uint16_t *p = mem_access(address);
 	uint16_t v = *p;
@@ -218,6 +244,10 @@ m68k_read_memory_32(unsigned int address)
 	case MC6850_DATA:
 		io_error("illegal access", address);
 		return console_in();
+	case S_TIME:
+		return timer_read_stime32();
+	case DIP_SWITCH:
+		return dip_read32();
 	}
 	uint32_t *p = mem_access(address);
 	uint32_t v = *p;
@@ -234,7 +264,7 @@ bootrom_load(const char *filename)
 	}
 	size_t bootrom_len = fread(bootrom, 1, sizeof(bootrom), f);
 	fclose(f);
-	
+
 	/* fill the remainder with 0xff */
 	memset(bootrom + bootrom_len, 0xff, BOOTROM_LEN - bootrom_len);
 
