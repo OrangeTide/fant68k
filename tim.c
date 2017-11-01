@@ -24,12 +24,14 @@
  * reads by that amount. */
 static uint32_t timer_offset = 0;
 
-void timer_init(void)
+void
+timer_init(void)
 {
 	/* Nothing */
 }
 
-uint32_t timer_read_stime32(void)
+uint32_t
+timer_read_stime32(void)
 {
 	time_t now = time(0);
 	struct tm *tm = localtime(&now);
@@ -37,7 +39,8 @@ uint32_t timer_read_stime32(void)
 	return sec - timer_offset; /* seconds since midnight */
 }
 
-uint16_t timer_read_stime16(unsigned addr)
+uint16_t
+timer_read_stime16(unsigned addr)
 {
 	uint32_t sec = timer_read_stime32();
 	switch (addr & 2u) {
@@ -49,7 +52,8 @@ uint16_t timer_read_stime16(unsigned addr)
 	abort();
 }
 
-uint8_t timer_read_stime8(unsigned addr)
+uint8_t
+timer_read_stime8(unsigned addr)
 {
 	uint32_t sec = timer_read_stime32();
 	switch (addr & 3u) {
@@ -65,12 +69,14 @@ uint8_t timer_read_stime8(unsigned addr)
 	abort();
 }
 
-void timer_update32(unsigned value)
+void
+timer_update32(unsigned value)
 {
 	timer_offset = value;
 }
 
-void timer_update16(unsigned addr, unsigned value)
+void
+timer_update16(unsigned addr, unsigned value)
 {
 	switch (addr & 2u) {
 	case 0:
@@ -83,7 +89,9 @@ void timer_update16(unsigned addr, unsigned value)
 		break;
 	}
 }
-void timer_update8(unsigned addr, unsigned value)
+
+void
+timer_update8(unsigned addr, unsigned value)
 {
 	switch (addr & 3u) {
 	case 0:
