@@ -20,6 +20,20 @@ Things that are not yet implemented:
   * MIDI in/out
   * Ethernet (NE2000 or AMD LANCE. BIOS exposes as a packet driver)
 
+## Building & Installation ##
+
+To build with NULL display and headless output:
+  make
+
+To build with SDL display:
+  make USE_SDL=1
+
+It is recommended you start from a clean build if you alter the configuration.
+
+### Requirements ###
+
+pkg-config is used by Makefile to setup options when building with SDL2.
+
 ## Supported Operating Systems ##
 
 ### CP/M-68K ###

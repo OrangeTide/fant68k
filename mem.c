@@ -31,23 +31,7 @@
 #define TRACE_MEM(addr) /* nothing */
 #endif
 
-#define RAM0_BASE 0x0
-#define RAM0_LEN 0x500000
-
-#define VIDMEM_BASE (RAM0_BASE + RAM0_LEN)
-#define VIDMEM_LEN 0x180000
-
-#define BOOTROM_BASE (VIDMEM_BASE + VIDMEM_LEN)
-#define BOOTROM_LEN 0x080000
-
-#define RAM1_BASE (BOOTROM_BASE + BOOTROM_LEN)
-#define RAM1_LEN 0x800000
-
-#define IO_BASE (RAM1_BASE + RAM1_LEN)
-#define IO_LEN 0x400
-
 static uint8_t ram0[RAM0_LEN];
-static uint8_t vidmem[VIDMEM_LEN];
 static uint8_t bootrom[BOOTROM_LEN];
 static uint8_t ram1[RAM1_LEN];
 
@@ -65,7 +49,7 @@ mem_access(unsigned int address)
 	if (address < RAM0_LEN)
 		return &ram0[address - RAM0_BASE];
 	else if (address < VIDMEM_BASE + VIDMEM_LEN)
-		return &vidmem[address - VIDMEM_BASE];
+		return &dummy; /* NOTE: should never see this */
 	else if (address < BOOTROM_BASE + BOOTROM_LEN)
 		return &bootrom[address - BOOTROM_BASE];
 	else if (address < RAM1_BASE + RAM1_LEN)
@@ -103,8 +87,15 @@ m68k_write_memory_8(unsigned int address, unsigned int value)
 	case (DIP_SWITCH + 3):
 		return; /* ignored */
 	}
+
+	if (address >= VIDMEM_BASE && address < VIDMEM_BASE + VIDMEM_LEN) {
+		display_write8(address - VIDMEM_BASE, value);
+		return;
+	}
+
 	if (address >= BOOTROM_BASE && address < BOOTROM_BASE + BOOTROM_LEN)
 		return; /* ignore writes to ROM */
+
 	uint8_t *p = mem_access(address);
 	*p = value;
 }
@@ -132,8 +123,15 @@ m68k_write_memory_16(unsigned int address, unsigned int value)
 	case (DIP_SWITCH + 2):
 		return; /* ignored */
 	}
+
+	if (address >= VIDMEM_BASE && address < VIDMEM_BASE + VIDMEM_LEN) {
+		display_write16(address - VIDMEM_BASE, value);
+		return;
+	}
+
 	if (address >= BOOTROM_BASE && address < BOOTROM_BASE + BOOTROM_LEN)
 		return; /* ignore writes to ROM */
+
 	uint16_t *p = mem_access(address);
 	uint16_t v = value;
 	*p = htobe16(v);
@@ -160,8 +158,15 @@ m68k_write_memory_32(unsigned int address, unsigned int value)
 	case DIP_SWITCH:
 		return; /* ignored */
 	}
+
+	if (address >= VIDMEM_BASE && address < VIDMEM_BASE + VIDMEM_LEN) {
+		display_write32(address - VIDMEM_BASE, value);
+		return;
+	}
+
 	if (address >= BOOTROM_BASE && address < BOOTROM_BASE + BOOTROM_LEN)
 		return; /* ignore writes to ROM */
+
 	uint32_t *p = mem_access(address);
 	uint32_t v = value;
 	*p = htobe32(v);
@@ -200,6 +205,10 @@ m68k_read_memory_8(unsigned int address)
 	case (DIP_SWITCH + 3):
 		return dip_read8(address & 3);
 	}
+
+	if (address >= VIDMEM_BASE && address < VIDMEM_BASE + VIDMEM_LEN)
+		return display_read8(address - VIDMEM_BASE);
+
 	uint8_t *p = mem_access(address);
 	return *p;
 }
@@ -225,6 +234,10 @@ m68k_read_memory_16(unsigned int address)
 	case (DIP_SWITCH + 2):
 		return dip_read16(address & 2);
 	}
+
+	if (address >= VIDMEM_BASE && address < VIDMEM_BASE + VIDMEM_LEN)
+		return display_read16(address - VIDMEM_BASE);
+
 	uint16_t *p = mem_access(address);
 	uint16_t v = *p;
 	return be16toh(v);
@@ -249,6 +262,10 @@ m68k_read_memory_32(unsigned int address)
 	case DIP_SWITCH:
 		return dip_read32();
 	}
+
+	if (address >= VIDMEM_BASE && address < VIDMEM_BASE + VIDMEM_LEN)
+		return display_read32(address - VIDMEM_BASE);
+
 	uint32_t *p = mem_access(address);
 	uint32_t v = *p;
 	return be32toh(v);

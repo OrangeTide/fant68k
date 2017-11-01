@@ -79,12 +79,14 @@ main(int argc __attribute__((unused)), char **argv __attribute__((unused)))
 	bootrom_load("hello.bin");
 
 	timer_init();
-	dip_init(DIP_SWITCH_GRAPHICS_BIT
-		| DIP_SWITCH_KEYBOARD_BIT | DIP_SWITCH_MOUSE_BIT);
+	dip_init(DEFAULT_DIP_SWITCH);
+	display_init();
 
 	init();
 
 	run();
+
+	display_quit();
 
 	return 0;
 }
