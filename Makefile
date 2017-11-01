@@ -36,8 +36,8 @@ clean :: ; $(RM) m68k.a m68kopac.o m68kopdm.o m68kopnz.o m68kops.o m68kcpu.o m68
 all :: fant
 fant : CPPFLAGS := -I$(MUSASHI_SRC) -DM68K_COMPILE_FOR_MAME=OPT_OFF
 fant : CFLAGS += -Wall -W
-fant : fant.o console.o mem.o tim.o m68k.a
-clean :: ; $(RM) fant fant.o console.o mem.o tim.o
+fant : fant.o console.o dipswitch.o mem.o tim.o m68k.a
+clean :: ; $(RM) fant fant.o console.o dipswitch.o mem.o tim.o
 
 # a small test program (hello.asm)
 all :: hello.bin hello.srec

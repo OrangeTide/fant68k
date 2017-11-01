@@ -8,6 +8,10 @@
 #define MC6850_STAT	0xff1000L	/* command/status register */
 #define MC6850_DATA	0xff1002L	/* receive/transmit data register */
 
+#define DIP_SWITCH	(0xff7ff0)	/* DIP switch settings */
+#define DIP_SWITCH_GRAPHICS_BIT	(1u << 0)	/* serial(0) or graphics(1) */
+#define DIP_SWITCH_KEYBOARD_BIT	(1u << 1)	/* keyboard present? */
+#define DIP_SWITCH_MOUSE_BIT	(1u << 2)	/* keyboard only or mouse(1) */
 #define S_TIME		(0xff7ff8)	/* read long to get time in seconds */
 #define SIM_EXIT	(0xff7ffc)	/* write long to exit simulator */
 
@@ -21,6 +25,12 @@ void fant_done(int);
 uint8_t console_in(void);
 void console_out(uint8_t);
 unsigned console_stat(void);
+
+/*~* dipswitch.c *~*/
+void dip_init(uint32_t dip);
+uint32_t dip_read32(void);
+uint16_t dip_read16(unsigned addr);
+uint8_t dip_read8(unsigned addr);
 
 /*~* tim.c *~*/
 void timer_init(void);
